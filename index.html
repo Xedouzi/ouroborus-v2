@@ -782,8 +782,7 @@ lista.addEventListener('mouseleave',function(){ativa(-1);});
 (function(){
 if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
 var c=document.createElement('canvas');c.className='neve';c.setAttribute('aria-hidden','true');document.body.appendChild(c);
-var g=c.getContext('2d'),W,H,dpr,P=[],mx=-9999,my=-9999,RAIO=120,ultimo=performance.now(),sy=scrollY,emp=0;
-addEventListener('scroll',function(){var d=scrollY-sy;sy=scrollY;emp+=d;},{passive:true});
+var g=c.getContext('2d'),W,H,dpr,P=[],mx=-9999,my=-9999,RAIO=120,ultimo=performance.now();
 function cor(){var r=Math.random();return r<.2?'rgba(200,16,46,':r<.55?'rgba(10,10,12,':'rgba(120,122,130,';}
 function novo(y){return{x:Math.random()*W,y:y==null?Math.random()*H:y,r:.9+Math.random()*1.9,vy:.18+Math.random()*.42,f:Math.random()*6.283,vf:.006+Math.random()*.012,amp:6+Math.random()*16,dx:0,dy:0,c:cor(),a:.35+Math.random()*.45};}
 function tam(){dpr=Math.min(window.devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);g.setTransform(dpr,0,0,dpr,0,0);var n=Math.min(170,Math.round(W*H/9500));while(P.length<n)P.push(novo());P.length=n;}
@@ -793,14 +792,13 @@ addEventListener('pointerdown',function(e){mx=e.clientX;my=e.clientY;},{passive:
 addEventListener('pointerup',function(e){if(e.pointerType!=='mouse'){mx=my=-9999;}},{passive:true});
 document.documentElement.addEventListener('pointerleave',function(){mx=my=-9999;});
 function quadro(t){var dt=Math.min(3,(t-ultimo)/16.67);ultimo=t;g.clearRect(0,0,W,H);
- var amort=Math.pow(.93,dt),mov=emp*.9;emp*=Math.pow(.82,dt);if(Math.abs(emp)<.05)emp=0;
- for(var i=0;i<P.length;i++){var p=P[i];p.f+=p.vf*dt;p.y+=p.vy*dt-mov*(.25+p.r*.22)*Math.min(1,dt);
+ var amort=Math.pow(.93,dt);
+ for(var i=0;i<P.length;i++){var p=P[i];p.f+=p.vf*dt;p.y+=p.vy*dt;
   var bx=p.x+Math.sin(p.f)*p.amp,ex=bx+p.dx-mx,ey=p.y+p.dy-my,d2=ex*ex+ey*ey;
   if(d2<RAIO*RAIO){var d=Math.sqrt(d2)||1,k=(1-d/RAIO);k=k*k*7;p.dx+=ex/d*k*dt;p.dy+=ey/d*k*dt;}
   p.dx*=amort;p.dy*=amort;
   var px=bx+p.dx,py=p.y+p.dy;
   if(py>H+12){P[i]=novo(-12);continue;}
-  if(py<-12){P[i]=novo(H+12);continue;}
   if(px<-12)p.x+=W+24;else if(px>W+12)p.x-=W+24;
   g.fillStyle=p.c+p.a+')';g.beginPath();g.arc(px,py,p.r,0,6.283);g.fill();}
  requestAnimationFrame(quadro);}
